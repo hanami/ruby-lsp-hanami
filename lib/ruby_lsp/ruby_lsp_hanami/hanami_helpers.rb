@@ -1,5 +1,6 @@
 # typed: true
 # frozen_string_literal: true
+
 require_relative "key_forest"
 
 module RubyLsp
@@ -11,7 +12,7 @@ module RubyLsp
     @key_forest = nil
     # dumb
     CONTAINERS = %w[deps app].freeze
-    KeyType = T.type_alias { T.any(T::Array[String], String) }
+    KeyType = T.type_alias { T.nilable(T.any(T::Array[String], String)) }
 
     sig { params(key: KeyType, value: RubyIndexer::Entry).void }
     def self.add_key_entry(key, value)
@@ -41,7 +42,7 @@ module RubyLsp
       unless lsp_index.nil?
         key_parts = key.is_a?(Array) ? key : key.split(".")
         matched += lsp_index.resolve(key_parts.last,
-                                       key_parts[0, key_parts.length - 1]) || []
+                                     key_parts[0, key_parts.length - 1]) || []
       end
 
       matched.uniq!

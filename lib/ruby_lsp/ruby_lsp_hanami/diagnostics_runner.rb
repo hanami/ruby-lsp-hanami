@@ -48,7 +48,8 @@ module RubyLsp
                       else
                         [
                           RubyLsp::Interface::Diagnostic.new(
-                            message: "Key: \"#{given_key}\" not found. \n Newline",
+                            # message: "Key: \"#{given_key}\" not found. \n Newline",
+                            message: "Key: \"#{given_key}\" not found.",
                             range: RubyLsp::Interface::Range.new(
                               start: RubyLsp::Interface::Position.new(line: starting_location.start_line - 1,
                                                                       character: starting_location.start_column),
