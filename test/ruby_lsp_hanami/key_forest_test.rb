@@ -36,13 +36,19 @@ module RubyLsp
         assert_equal ["views"], @forest.completion_options(key: "v")
 
         # children of root (exact root match)
-        assert_equal %w[index posts users], @forest.completion_options(key: "actions").sort
+        assert_equal %w[posts users], @forest.completion_options(key: "actions").sort
 
         # children of sub-node (exact match of an intermediate node)
         assert_equal %w[index show], @forest.completion_options(key: "actions.users")
 
         # leaf node (no children available)
         assert_equal [], @forest.completion_options(key: "actions.users.index")
+      end
+
+      def test_key_is_blank
+        @forest.add_entry(key: "actions.users.index", entry: "Entry1")
+        assert_equal [], @forest.completion_options(key: "")
+        assert_equal [], @forest.completion_options(key: [])
       end
     end
   end
