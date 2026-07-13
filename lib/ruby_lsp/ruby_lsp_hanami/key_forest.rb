@@ -19,6 +19,13 @@ module RubyLsp
         !node.nil? && node.key?(:entry)
       end
 
+      def key_present?(key:)
+        return false if empty_key?(key: key)
+
+        key_parts = create_key_parts(key: key)
+        !@trees.dig(*key_parts).nil?
+      end
+
       def add_entry(key:, entry:)
         key_parts = create_key_parts(key: key)
 
@@ -65,7 +72,24 @@ module RubyLsp
         @trees = {}
       end
 
+      def delete_by_uri(uri)
+        uri_str = uri.to_s
+        delete_from_node(@trees, uri_str)
+      end
+
       private
+
+      def delete_from_node(node, uri_str)
+        node.each do |key, child|
+          next if key == :entry
+
+          delete_from_node(child, uri_str)
+
+          child.delete(:entry) if child[:entry] && child.dig(:entry).uri.to_s == uri_str
+
+          node.delete(key) if child.empty?
+        end
+      end
 
       # provide a way to pass a traditional key (e.g.: 'how.we.encounter.it'), but allow for
       # the caller to optimize and pass an array to prevent needless splitting

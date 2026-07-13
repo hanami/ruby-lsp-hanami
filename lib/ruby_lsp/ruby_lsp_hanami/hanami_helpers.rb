@@ -56,6 +56,13 @@ module RubyLsp
       @key_forest.key?(key: key)
     end
 
+    sig { params(key: KeyType).returns(T::Boolean) }
+    def self.key_present?(key:)
+      return false if @key_forest.nil?
+
+      @key_forest.key_present?(key: key)
+    end
+
     sig { params(key: KeyType).returns(T::Array[RubyIndexer::Entry]) }
     def self.completion_options(key:)
       return [] if @key_forest.nil?
@@ -70,6 +77,11 @@ module RubyLsp
     sig { void }
     def self.clear_entries
       @key_forest&.forest_fire
+    end
+
+    sig { params(uri: T.any(String, URI::Generic)).void }
+    def self.delete_entries_for_uri(uri)
+      @key_forest&.delete_by_uri(uri)
     end
   end
 end
