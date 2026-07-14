@@ -58,6 +58,10 @@ module RubyLsp
 
             hit = hit.first
 
+            full_key = build_full_key(hit.name, parents)
+
+            next unless RubyLsp::Hanami.key_present?(key: full_key)
+
             @response_builder << generate_completion_line_item(completion_candidate: hit.name)
           end
         end
@@ -74,6 +78,14 @@ module RubyLsp
 
       def hit_from_gem?(hit)
         hit.first&.uri.to_s.include?(".rbenv")
+      end
+
+      def build_full_key(hit_name, parents)
+        formatted_name = hit_name.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+                                 .gsub(/([a-z])([A-Z])/, '\1_\2')
+                                 .downcase
+
+        (parents + [formatted_name]).join(".")
       end
 
       def generate_completion_line_item(completion_candidate:)
