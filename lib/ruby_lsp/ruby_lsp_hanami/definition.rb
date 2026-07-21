@@ -23,7 +23,7 @@ module RubyLsp
         @index = index
         @workspace_path = workspace_path
 
-        dispatcher.register(self, :on_symbol_node_enter, :on_string_node_enter, :on_class_node_enter)
+        dispatcher.register(self, :on_string_node_enter)
       end
 
       sig { params(node: Prism::StringNode).void }
